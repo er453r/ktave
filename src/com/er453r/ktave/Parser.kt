@@ -19,24 +19,18 @@ class Parser(private val string: String) {
 
         var position = 0
 
-        while(position < string.length){
-            var found = false
-
+        next@ while(position < string.length){
             for (token in tokens){
-                token.regex.find(string, position)?.takeIf { it.range.start == position }?.let {
-                    log.info { "Found ${it.value}" }
+                val match = token.regex.find(string, position)?.takeIf { it.range.start == position }
 
-                    position += it.value.length
+                if(match != null){
+                    log.info { "Found ${match.value}" }
 
-                    found = true
+                    position += match.value.length
+
+                    continue@next
                 }
-
-                if(found)
-                    break
             }
-
-            if(found)
-                continue
 
             log.error { "No matching tokens found! For \"${string.substring(position)}\"" }
 
