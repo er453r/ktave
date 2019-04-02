@@ -21,18 +21,24 @@ class Parser(private val tokens: Array<Token>, private val tokenConsumer: TokenC
 
         next@ while (position < statement.length) {
             for (token in tokens) {
-                val match = token.regex.find(statement, position)?.takeIf { it.range.start == position }
+                val match = token.regex.find(statement, position)?.takeIf { it.range.start == position }?.value
 
                 if (match != null) {
-                    position += match.value.length
+                    try {
+                        tokenConsumer.addToken(token.fromString(match))
+                    } catch (exception: Exception) {
+                        throw ParserException("Error [${exception.message}]: \"${statement.substring(position)}\"", column, line)
+                    }
 
-                    val newLinePosition = match.value.indexOf(NEW_LINE)
+                    position += match.length
+
+                    val newLinePosition = match.indexOf(NEW_LINE)
 
                     if (newLinePosition > -1) {
                         line++
-                        column = match.value.length - newLinePosition
+                        column = match.length - newLinePosition
                     } else
-                        column += match.value.length
+                        column += match.length
 
                     continue@next
                 }

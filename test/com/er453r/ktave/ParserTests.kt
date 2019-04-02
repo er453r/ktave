@@ -1,6 +1,6 @@
 package com.er453r.ktave
 
-import com.er453r.ktave.lang.ARithmetic
+import com.er453r.ktave.lang.Arithmetic
 import com.er453r.ktave.lang.ArithmeticConsumer
 import com.er453r.ktave.lang.Number
 import com.er453r.ktave.lang.Space
@@ -14,14 +14,14 @@ class ParserTests {
         tokens = arrayOf(
             Number(),
             Space(),
-            ARithmetic()
+            Arithmetic()
         ),
         tokenConsumer = ArithmeticConsumer()
     )
 
     @Test
     fun `General error handling`() {
-        assertFailsWith(ParserException::class){
+        assertFailsWith(ParserException::class) {
             testParser().parse("2 +Ź2")
         }
     }

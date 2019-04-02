@@ -4,4 +4,5 @@ import com.er453r.ktave.parser.Token
 
 class Space : Token {
     override val regex = Regex(" ")
+    override fun fromString(statement: String) = Space()
 }
