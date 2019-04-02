@@ -1,40 +1,44 @@
 package com.er453r.ktave
 
-import com.er453r.ktave.lang.ARithmetic
-import com.er453r.ktave.lang.Number
-import com.er453r.ktave.lang.Space
+import com.er453r.ktave.parser.ParserException
+import com.er453r.ktave.parser.Token
+import com.er453r.ktave.parser.TokenConsumer
 import mu.KotlinLogging
 
-class Parser(private val string: String) {
+class Parser(private val tokens: Array<Token>, private val tokenConsumer: TokenConsumer) {
+    companion object {
+        private const val NEW_LINE = "\n"
+    }
+
     private val log = KotlinLogging.logger {}
 
-    init {
-        log.info { "Parsing $string" }
-
-        val tokens = arrayOf(
-            Number(),
-            Space(),
-            ARithmetic()
-        )
+    fun parse(statement: String) {
+        log.info { "Parsing $statement" }
 
         var position = 0
+        var column = 1
+        var line = 1
 
-        next@ while(position < string.length){
-            for (token in tokens){
-                val match = token.regex.find(string, position)?.takeIf { it.range.start == position }
+        next@ while (position < statement.length) {
+            for (token in tokens) {
+                val match = token.regex.find(statement, position)?.takeIf { it.range.start == position }
 
-                if(match != null){
-                    log.info { "Found ${match.value}" }
-
+                if (match != null) {
                     position += match.value.length
+
+                    val newLinePosition = match.value.indexOf(NEW_LINE)
+
+                    if (newLinePosition > -1) {
+                        line++
+                        column = match.value.length - newLinePosition
+                    } else
+                        column += match.value.length
 
                     continue@next
                 }
             }
 
-            log.error { "No matching tokens found! For \"${string.substring(position)}\"" }
-
-            break
+            throw ParserException("Unknown character: \"${statement.substring(position)}\"", column, line)
         }
 
         log.info { "Parsing successful!" }
