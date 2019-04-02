@@ -5,7 +5,7 @@ import com.er453r.ktave.parser.Token
 class Number() : Token {
     var value = 0.0
 
-    private constructor(statement: String) : this() {
+    internal constructor(statement: String) : this() {
         value = statement.toDouble()
     }
 
