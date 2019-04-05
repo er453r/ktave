@@ -1,14 +1,12 @@
 package com.er453r.ktave.lang
 
-import com.er453r.ktave.parser.Token
-
-class Arithmetic() : Token, NodeConsumer {
-    private var left: Token? = null
-    private var right: Token? = null
+class Arithmetic() : Node(), NodeConsumer {
+    private var left: Node? = null
+    private var right: Node? = null
 
     override val isAccepting = true
 
-    override fun addNode(token: Token?) {
+    override fun addNode(token: Node?) {
         if (left == null && token == null) {
             left = Number("0") // TODO - can be static
 

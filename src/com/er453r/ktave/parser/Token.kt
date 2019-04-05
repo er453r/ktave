@@ -1,7 +1,7 @@
 package com.er453r.ktave.parser
 
-interface Token {
+interface Token<T : Token<T>> {
     val regex: Regex
 
-    fun fromString(statement:String):Token
+    fun fromString(statement: String): T
 }

@@ -1,5 +1,5 @@
 package com.er453r.ktave.parser
 
-interface TokenConsumer {
-    fun addToken(token: Token)
+interface TokenConsumer<T : Token<T>> {
+    fun addToken(token: T)
 }

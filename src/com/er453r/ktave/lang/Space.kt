@@ -1,8 +1,6 @@
 package com.er453r.ktave.lang
 
-import com.er453r.ktave.parser.Token
-
-class Space : Token {
+class Space : Node() {
     override val regex = Regex(" ")
     override fun fromString(statement: String) = Space()
 }

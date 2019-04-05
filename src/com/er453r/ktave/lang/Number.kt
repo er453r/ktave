@@ -1,9 +1,7 @@
 package com.er453r.ktave.lang
 
-import com.er453r.ktave.parser.Token
-
-class Number() : Token {
-    var value = 0.0
+class Number() : Node() {
+    private var value = 0.0
 
     internal constructor(statement: String) : this() {
         value = statement.toDouble()

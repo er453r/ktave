@@ -5,7 +5,7 @@ import com.er453r.ktave.parser.Token
 import com.er453r.ktave.parser.TokenConsumer
 import mu.KotlinLogging
 
-class Parser(private val tokens: Array<Token>, private val tokenConsumer: TokenConsumer) {
+class Parser<T : Token<T>>(private val tokens: Array<T>, private val tokenConsumer: TokenConsumer<T>) {
     companion object {
         private const val NEW_LINE = "\n"
     }

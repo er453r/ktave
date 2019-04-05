@@ -1,19 +1,18 @@
 package com.er453r.ktave.lang
 
-import com.er453r.ktave.parser.Token
 import com.er453r.ktave.parser.TokenConsumer
 import mu.KotlinLogging
 
-class ArithmeticConsumer : TokenConsumer {
+class ArithmeticConsumer : TokenConsumer<Node> {
     private val log = KotlinLogging.logger {}
 
     //    private val nodes = mutableListOf<Token>()
-    private var currentNode: Token? = null
+    private var currentNode: Node? = null
 
-    override fun addToken(token: Token) {
+    override fun addToken(token: Node) {
         log.info { "New ${token::class.simpleName} appeared" }
 
-        if(token is Space)
+        if (token is Space)
             return
 
         if (token is NodeConsumer && token.isAccepting) {
