@@ -7,8 +7,7 @@ import mu.KotlinLogging
 class ArithmeticConsumer : TokenConsumer {
     private val log = KotlinLogging.logger {}
 
-    //    private val nodes = mutableListOf<Token>()
-    private var currentNode: Token? = null
+    private var current: Expression? = null
 
     override fun addToken(token: Token) {
         log.info { "New ${token::class.simpleName} appeared" }
@@ -16,29 +15,29 @@ class ArithmeticConsumer : TokenConsumer {
         if(token is Space)
             return
 
-        if (token is NodeConsumer && token.isAccepting) {
+        if (token is ExpressionConsumer && token.isAccepting) {
             log.info { "New consumer appeared" }
 
-            token.addNode(currentNode)
+            current?.let { token.addExpression(it) }
 
-            this.currentNode = token
+            this.current = token
 
             return
         }
 
-        if (currentNode == null) {
+        if (current == null && token is Expression) {
             log.info { "Adding node" }
 
-            currentNode = token
+            current = token
 
             return
         }
 
-        currentNode?.let {
-            if (it is NodeConsumer && it.isAccepting) {
+        current?.let {
+            if (it is ExpressionConsumer && it.isAccepting && token is Expression) {
                 log.info { "Adding to existing consumer" }
 
-                it.addNode(token)
+                it.addExpression(token)
 
                 return
             }

@@ -1,39 +1,30 @@
 package com.er453r.ktave.lang
 
-import com.er453r.ktave.parser.Token
-
-class Arithmetic() : Token, NodeConsumer {
-    private var left: Token? = null
-    private var right: Token? = null
-
-    override val isAccepting = true
-
-    override fun addNode(token: Token?) {
-        if (left == null && token == null) {
-            left = Number("0") // TODO - can be static
-
-            return
+class Arithmetic(private val type: String = "+") : ExpressionConsumer {
+    override val value: Double
+        get() = when(type){
+            "+" -> left!!.value + right!!.value
+            "-" -> left!!.value - right!!.value
+            else -> throw Exception("Do not know how to do $type")
         }
 
-        if (left == null)
-            left = token
-        else if (right == null)
-            right = token
-        else if (right is NodeConsumer)
-            right?.let {
-                if (it is NodeConsumer && it.isAccepting)
-                    it.addNode(token)
+    override fun addExpression(expression: Expression) {
+        when {
+            left == null -> left = expression
+            right == null -> right = expression
+            right is ExpressionConsumer -> right?.let {
+                if (it is ExpressionConsumer && it.isAccepting)
+                    it.addExpression(expression)
             }
-        else
-            throw Exception("Do not know how to handle $token")
-
+            else -> throw Exception("Do not know how to handle $expression")
+        }
     }
 
-    override val regex = Regex("\\+")
+    private var left: Expression? = null
+    private var right: Expression? = null
 
-    private constructor(statement: String) : this() {
-
-    }
+    override val isAccepting = true
+    override val regex = Regex("[+-/*]")
 
     override fun fromString(statement: String) = Arithmetic(statement)
 }
