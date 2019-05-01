@@ -100,4 +100,17 @@ class ParserTests {
 
         assertEquals(value, 3.0)
     }
+
+    @Test
+    fun `Simple float addition test`() {
+        val arithmeticConsumer = ArithmeticConsumer()
+
+        testParser(arithmeticConsumer).parse("3.45 + 2.33")
+
+        val value = arithmeticConsumer.value
+
+        log.info { "Got value $value" }
+
+        assertEquals(value, 5.78)
+    }
 }

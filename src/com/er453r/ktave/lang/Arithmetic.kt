@@ -28,7 +28,7 @@ class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
     private var right: Expression? = null
 
     override val isAccepting = true
-    override val regex = Regex("[+-/*]")
+    override val regex = Regex("[+\\-/*]")
 
     override fun fromString(statement: String) = Arithmetic(statement)
 }
