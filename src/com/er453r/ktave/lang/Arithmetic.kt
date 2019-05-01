@@ -1,10 +1,14 @@
 package com.er453r.ktave.lang
 
-class Arithmetic(private val type: String = "+") : ExpressionConsumer {
+import com.er453r.ktave.parser.Token
+
+class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
     override val value: Double
-        get() = when(type){
+        get() = when (type) {
             "+" -> left!!.value + right!!.value
             "-" -> left!!.value - right!!.value
+            "*" -> left!!.value * right!!.value
+            "/" -> left!!.value / right!!.value
             else -> throw Exception("Do not know how to do $type")
         }
 

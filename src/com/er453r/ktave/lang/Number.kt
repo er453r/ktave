@@ -1,6 +1,8 @@
 package com.er453r.ktave.lang
 
-class Number(override val value: Double = 0.0) : Expression {
+import com.er453r.ktave.parser.Token
+
+class Number(override val value: Double = 0.0) : Expression, Token {
     internal constructor(statement: String) : this(statement.toDouble())
 
     override val regex = Regex("\\d+")

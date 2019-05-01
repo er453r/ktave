@@ -4,7 +4,7 @@ import com.er453r.ktave.parser.Token
 import com.er453r.ktave.parser.TokenConsumer
 import mu.KotlinLogging
 
-class ArithmeticConsumer : TokenConsumer {
+class ArithmeticConsumer : TokenConsumer, Expression {
     private val log = KotlinLogging.logger {}
 
     private var current: Expression? = null
@@ -45,4 +45,7 @@ class ArithmeticConsumer : TokenConsumer {
 
         throw Exception("Do not know what to do with $token")
     }
+
+    override val value: Double
+        get() = current!!.value
 }
