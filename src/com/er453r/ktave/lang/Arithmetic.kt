@@ -16,8 +16,12 @@ class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
             else -> throw Exception("Do not know how to do $type")
         }
 
-    override fun addExpression(expression: Expression) {
+    override fun addExpression(expression: Expression?) {
         when {
+            expression == null -> when(type){
+                "+", "-" -> left = Number("0")
+                else -> throw Exception("First argument missing")
+            }
             left == null -> left = expression
             right == null -> right = expression
             right is ExpressionConsumer -> right?.let {

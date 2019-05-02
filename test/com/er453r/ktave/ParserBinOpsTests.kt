@@ -4,9 +4,11 @@ import com.er453r.ktave.lang.Arithmetic
 import com.er453r.ktave.lang.ArithmeticConsumer
 import com.er453r.ktave.lang.Number
 import com.er453r.ktave.lang.Space
+import com.er453r.ktave.parser.ParserException
 import mu.KotlinLogging
 import kotlin.math.abs
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class ParserBinOpsTests {
     companion object {
@@ -15,7 +17,7 @@ class ParserBinOpsTests {
 
     private val log = KotlinLogging.logger {}
 
-    private fun eval(statement: String, expected: Double) {
+    private fun eval(statement: String, expected: Double = 0.0) {
         val consumer = ArithmeticConsumer()
 
         val parser = Parser(
@@ -37,6 +39,21 @@ class ParserBinOpsTests {
     }
 
     @Test
+    fun `Unary bin op tests`() {
+        eval("+2", 2.0)
+        eval("-1", -1.0)
+        eval("3", 3.0)
+
+        assertFailsWith(ParserException::class) {
+            eval("*1")
+        }
+
+        assertFailsWith(ParserException::class) {
+            eval("/1")
+        }
+    }
+
+    @Test
     fun `Simple bin op tests`() {
         eval("3 + 2", 5.0)
         eval("3 -1", 2.0)
@@ -52,10 +69,15 @@ class ParserBinOpsTests {
         eval("3.2 / 1.6", 2.0)
     }
 
-
     @Test
     fun `Operator precedence tests`() {
         eval("2 + 3 * 4", 14.0)
         eval("2 * 3 + 4", 10.0)
+
+        eval("2 + 3 + 4 + 5", 14.0)
+        eval("2 * 3 * 4 * 5", 120.0)
+        eval("2 * 3 / 4 + 5", 6.5)
+        eval("2 + 3 * 4 + 5", 19.0)
+        eval("2 * 3 * 4 / 5", 4.8)
     }
 }

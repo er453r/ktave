@@ -18,8 +18,7 @@ class ArithmeticConsumer : TokenConsumer, Expression {
         if (token is ExpressionConsumer && token.isAccepting && !(current != null && token.hasPrecedenceOver(current!!))) {
             log.info { "New consumer appeared" }
 
-            current?.let { token.addExpression(it) }
-
+            token.addExpression(current)
             this.current = token
 
             return
