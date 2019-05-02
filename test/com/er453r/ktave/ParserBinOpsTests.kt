@@ -5,13 +5,17 @@ import com.er453r.ktave.lang.ArithmeticConsumer
 import com.er453r.ktave.lang.Number
 import com.er453r.ktave.lang.Space
 import mu.KotlinLogging
+import kotlin.math.abs
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ParserBinOpsTests {
+    companion object {
+        private const val MAX_DELTA = 1e-6
+    }
+
     private val log = KotlinLogging.logger {}
 
-    private fun eval(statement: String): Double {
+    private fun eval(statement: String, expected: Double) {
         val consumer = ArithmeticConsumer()
 
         val parser = Parser(
@@ -29,30 +33,22 @@ class ParserBinOpsTests {
 
         log.info { "Eval \"$statement\" got \"$result\"" }
 
-        return result
+        assert(abs(expected - result) < MAX_DELTA)
     }
 
     @Test
-    fun `Simple addition test`() = assertEquals(5.0, eval("3 + 2"))
+    fun `Simple bin op tests`() {
+        eval("3 + 2", 5.0)
+        eval("3 -1", 2.0)
+        eval("3* 2", 6.0)
+        eval("6 / 2", 3.0)
+    }
 
     @Test
-    fun `Simple subtraction test`() = assertEquals(2.0, eval("3 -1"))
-
-    @Test
-    fun `Simple multiplication test`() = assertEquals(6.0, eval("3* 2"))
-
-    @Test
-    fun `Simple division test`() = assertEquals(3.0, eval("6 / 2"))
-
-    @Test
-    fun `Simple float addition test`() = assertEquals(5.77, eval("3.21 + 2.56"))
-
-    @Test
-    fun `Simple float subtraction test`() = assertEquals(0.65, eval("3.21 - 2.56"))
-
-    @Test
-    fun `Simple float multiplication test`() = assertEquals(8.0, eval("3.2 * 2.5"))
-
-    @Test
-    fun `Simple float division test`() = assertEquals(2.0, eval("3.2 / 1.6"))
+    fun `Simple float tests`() {
+        eval("3.21 + 2.56", 5.77)
+        eval("3.21 - 2.56", 0.65)
+        eval("3.2 * 2.5", 8.0)
+        eval("3.2 / 1.6", 2.0)
+    }
 }
