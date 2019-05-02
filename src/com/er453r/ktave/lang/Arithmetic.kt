@@ -3,6 +3,10 @@ package com.er453r.ktave.lang
 import com.er453r.ktave.parser.Token
 
 class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
+    companion object {
+        private const val PRECEDENCE_ORDER = "*/+-"
+    }
+
     override val value: Double
         get() = when (type) {
             "+" -> left!!.value + right!!.value
@@ -20,8 +24,19 @@ class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
                 if (it is ExpressionConsumer && it.isAccepting)
                     it.addExpression(expression)
             }
+            expression is ExpressionConsumer -> right?.let {
+                expression.addExpression(it)
+                right = expression
+            }
             else -> throw Exception("Do not know how to handle $expression")
         }
+    }
+
+    override fun hasPrecedenceOver(expression: Expression): Boolean {
+        if (expression is Arithmetic)
+            return PRECEDENCE_ORDER.indexOf(type) < PRECEDENCE_ORDER.indexOf(expression.type)
+
+        return false
     }
 
     private var left: Expression? = null

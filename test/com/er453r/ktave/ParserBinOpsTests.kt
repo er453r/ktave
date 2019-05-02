@@ -51,4 +51,11 @@ class ParserBinOpsTests {
         eval("3.2 * 2.5", 8.0)
         eval("3.2 / 1.6", 2.0)
     }
+
+
+    @Test
+    fun `Operator precedence tests`() {
+        eval("2 + 3 * 4", 14.0)
+        eval("2 * 3 + 4", 10.0)
+    }
 }

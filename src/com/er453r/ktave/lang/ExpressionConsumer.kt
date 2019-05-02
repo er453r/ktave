@@ -4,4 +4,5 @@ interface ExpressionConsumer : Expression {
     val isAccepting: Boolean
 
     fun addExpression(expression: Expression)
+    fun hasPrecedenceOver(expression: Expression):Boolean = false
 }

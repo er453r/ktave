@@ -15,7 +15,7 @@ class ArithmeticConsumer : TokenConsumer, Expression {
         if(token is Space)
             return
 
-        if (token is ExpressionConsumer && token.isAccepting) {
+        if (token is ExpressionConsumer && token.isAccepting && !(current != null && token.hasPrecedenceOver(current!!))) {
             log.info { "New consumer appeared" }
 
             current?.let { token.addExpression(it) }
