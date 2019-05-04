@@ -9,23 +9,24 @@ class Arithmetic(private val type: String = "+") : Token, ExpressionConsumer {
 
     override val value: Double
         get() = when (type) {
-            "+" -> left!!.value + right!!.value
-            "-" -> left!!.value - right!!.value
+            "+" -> (left?.value ?: 0.0) + right!!.value
+            "-" -> (left?.value ?: 0.0) - right!!.value
             "*" -> left!!.value * right!!.value
             "/" -> left!!.value / right!!.value
             else -> throw Exception("Do not know how to do $type")
         }
 
-    override fun addExpression(expression: Expression) {
+    override fun addExpression(expression: Expression, isPrepended: Boolean) {
         when {
-            left == null -> left = expression
+            left == null && isPrepended -> left = expression
+            left == null && !isPrepended && (type == "*" || type == "/") -> throw Exception("Multiply/divide need 2 arguments")
             right == null -> right = expression
             right is ExpressionConsumer -> right?.let {
                 if (it is ExpressionConsumer && it.isAccepting)
                     it.addExpression(expression)
             }
             expression is ExpressionConsumer -> right?.let {
-                expression.addExpression(it)
+                expression.addExpression(it, true)
                 right = expression
             }
             else -> throw Exception("Do not know how to handle $expression")

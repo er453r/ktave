@@ -30,19 +30,23 @@ class ArithmeticConsumer : ExpressionConsumer, TokenConsumer {
         }
     }
 
-    override fun addExpression(expression: Expression) {
+    override fun addExpression(expression: Expression, isPrepended:Boolean) {
         current.let {
             when {
-                it == null -> current = expression
-                it is ExpressionConsumer && it.isAccepting -> {
-                    log.info { "Adding to existing consumer" }
+                it == null -> {
+                    log.info { "(setting as current)" }
+
+                    current = expression
+                }
+                it is ExpressionConsumer && it.isAccepting && !(expression is ExpressionConsumer && !expression.hasPrecedenceOver(it)) -> {
+                    log.info { "(adding to current consumer)" }
 
                     (current as ExpressionConsumer).addExpression(expression)
                 }
                 expression is ExpressionConsumer && expression.isAccepting -> {
-                    log.info { "New consumer appeared" }
+                    log.info { "(replacing as current consumer)" }
 
-                    expression.addExpression(it)
+                    expression.addExpression(it, true)
                     this.current = expression
                 }
                 else -> throw Exception("Do not know what to do with $expression")
