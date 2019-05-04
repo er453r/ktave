@@ -4,47 +4,49 @@ import com.er453r.ktave.parser.Token
 import com.er453r.ktave.parser.TokenConsumer
 import mu.KotlinLogging
 
-class ArithmeticConsumer : TokenConsumer, Expression {
+class ArithmeticConsumer : ExpressionConsumer, TokenConsumer {
     private val log = KotlinLogging.logger {}
 
     private var current: Expression? = null
 
+    override val value: Double
+        get() = current?.value ?: throw Exception("No expression present!")
+
+    override val isAccepting: Boolean
+        get() = current?.let {
+            when (it) {
+                is ExpressionConsumer -> it.isAccepting
+                else -> false
+            }
+        } ?: true
+
     override fun addToken(token: Token) {
         log.info { "New ${token::class.simpleName} appeared" }
 
-        if(token is Space)
-            return
-
-        if (token is ExpressionConsumer && token.isAccepting && !(current != null && token.hasPrecedenceOver(current!!))) {
-            log.info { "New consumer appeared" }
-
-            token.addExpression(current)
-            this.current = token
-
-            return
+        when (token) {
+            is Space -> return
+            is Expression -> addExpression(token)
+            else -> throw Exception("Do not know what to do with token $token")
         }
-
-        if (current == null && token is Expression) {
-            log.info { "Adding node" }
-
-            current = token
-
-            return
-        }
-
-        current?.let {
-            if (it is ExpressionConsumer && it.isAccepting && token is Expression) {
-                log.info { "Adding to existing consumer" }
-
-                it.addExpression(token)
-
-                return
-            }
-        }
-
-        throw Exception("Do not know what to do with $token")
     }
 
-    override val value: Double
-        get() = current!!.value
+    override fun addExpression(expression: Expression) {
+        current.let {
+            when {
+                it == null -> current = expression
+                expression is ExpressionConsumer && expression.isAccepting -> {
+                    log.info { "New consumer appeared" }
+
+                    expression.addExpression(it)
+                    this.current = expression
+                }
+                it is ExpressionConsumer && it.isAccepting -> {
+                    log.info { "Adding to existing consumer" }
+
+                    (current as ExpressionConsumer).addExpression(expression)
+                }
+                else -> throw Exception("Do not know what to do with $expression")
+            }
+        }
+    }
 }

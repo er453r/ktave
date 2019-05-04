@@ -12,7 +12,7 @@ import kotlin.test.assertFailsWith
 
 class ParserBinOpsTests {
     companion object {
-        private const val MAX_DELTA = 1e-6
+        const val MAX_DELTA = 1e-6
     }
 
     private val log = KotlinLogging.logger {}
