@@ -6,7 +6,7 @@ class Parenthesis(private val type:String = "(") : Token, ExpressionConsumer {
     override val value: Double
         get() = inside!!.value
 
-    override fun addExpression(expression: Expression?) {
+    override fun addExpression(expression: Expression) {
         when{
             inside == null && expression is Parenthesis && expression.type == ")" -> throw Exception("Empty parenthesis!")
             inside is ExpressionConsumer && (inside as ExpressionConsumer).isAccepting -> (inside as ExpressionConsumer).addExpression(expression)

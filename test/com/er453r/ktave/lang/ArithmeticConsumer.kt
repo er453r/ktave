@@ -34,16 +34,16 @@ class ArithmeticConsumer : ExpressionConsumer, TokenConsumer {
         current.let {
             when {
                 it == null -> current = expression
+                it is ExpressionConsumer && it.isAccepting -> {
+                    log.info { "Adding to existing consumer" }
+
+                    (current as ExpressionConsumer).addExpression(expression)
+                }
                 expression is ExpressionConsumer && expression.isAccepting -> {
                     log.info { "New consumer appeared" }
 
                     expression.addExpression(it)
                     this.current = expression
-                }
-                it is ExpressionConsumer && it.isAccepting -> {
-                    log.info { "Adding to existing consumer" }
-
-                    (current as ExpressionConsumer).addExpression(expression)
                 }
                 else -> throw Exception("Do not know what to do with $expression")
             }
