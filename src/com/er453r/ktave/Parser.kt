@@ -25,6 +25,8 @@ class Parser(private val tokens: Array<Token>, private val tokenConsumer: TokenC
 
                 if (match != null) {
                     try {
+                        log.info { "Matched \"$match\"" }
+
                         tokenConsumer.addToken(token.fromString(match))
                     } catch (exception: Exception) {
                         throw ParserException("Error [${exception.message}]: \"${statement.substring(position)}\" at line $line, column $column", column, line)
