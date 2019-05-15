@@ -38,7 +38,7 @@ class ArithmeticConsumer : ExpressionConsumer, TokenConsumer {
 
                     current = expression
                 }
-                it is ExpressionConsumer && it.isAccepting && !(expression is ExpressionConsumer && !expression.hasPrecedenceOver(it)) -> {
+                it is ExpressionConsumer && it.isAccepting && !(expression is ExpressionConsumer && !expression.hasPrecedenceOver(it) && !expression.isAccepting) -> {
                     log.info { "(adding to current consumer)" }
 
                     (current as ExpressionConsumer).addExpression(expression)

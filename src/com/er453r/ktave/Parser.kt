@@ -29,7 +29,7 @@ class Parser(private val tokens: Array<Token>, private val tokenConsumer: TokenC
 
                         tokenConsumer.addToken(token.fromString(match))
                     } catch (exception: Exception) {
-                        throw ParserException("Error [${exception.message}]: \"${statement.substring(position)}\" at line $line, column $column", column, line)
+                        throw ParserException("Error [${exception.message}]: \"${statement.substring(position)}\" at line $line, column $column", column, line, exception)
                     }
 
                     position += match.length
